@@ -1,29 +1,9 @@
-import { useEffect, useState } from "react";
-import Auth from "./components/Auth.jsx";
-import { db } from "./config/firebase.js";
-import { collection, getDocs } from "firebase/firestore";
-
+import { UserAuth } from "./context/AuthContext";
+import NonUserRoutes from "./routes/NonUserRoutes.jsx";
+import UserRoutes from "./routes/UserRoutes.jsx";
 function App() {
-  const [movies, setMovies] = useState([]);
-  console.log(movies);
-  useEffect(() => {
-    const getMovieList = async () => {
-      try {
-        const data = await getDocs(collection(db, "movies"));
-        const filteredData = data.docs.map((doc)=>({...doc.data()}))
-        setMovies(filteredData);
-      } catch (error) {
-        console.log("error from useEffect->")
-      }
-    };
-    getMovieList();
-  },[]);
-
-  return (
-    <>
-      <Auth />
-    </>
-  );
+  const { isLoggedOut } = UserAuth();
+  return <div>{isLoggedOut ? <NonUserRoutes /> : <UserRoutes />}</div>;
 }
 
 export default App;
